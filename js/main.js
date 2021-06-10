@@ -132,7 +132,7 @@ const createRandomComments = () => {
     .map((_element, index) => index + 1);
 
   let randomIndex;
-  const comments = new Array(PHOTO_COUNT).fill([]).map(()=>new Array());
+  const comments = new Array(PHOTO_COUNT).fill([]);//.map(()=>new Array()); //без map каждый новый элемент будет не независимым массивом, а ссылкой на 1 и тот же
 
   randomCommentsCountsPerItem.forEach((commentsCount, index) => {
 
