@@ -1,36 +1,3 @@
-/**
- * {@link https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%BE%D0%B3%D0%BE_%D1%86%D0%B5%D0%BB%D0%BE%D0%B3%D0%BE_%D1%87%D0%B8%D1%81%D0%BB%D0%B0_%D0%B2_%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D0%BE%D0%BC_%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%B2%D0%B0%D0%BB%D0%B5_%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE Источник}.
- * Возвращает случайное положительное целое число из переданного положительного диапазона включительно
- * @param {number} minValue мин. значение в диапазоне (положительное целое число, включая ноль)
- * @param {number} maxValue мак. значение в диапазоне (положительное целое число, включая ноль)
- * @return {number}
- */
-const getRandomInt = (minValue, maxValue) => {
-  let absIntMinValue = Math.floor(Math.abs(minValue));
-  let absIntMaxValue = Math.floor(Math.abs(maxValue));
-
-  if (absIntMinValue > absIntMaxValue) {
-    [absIntMaxValue, absIntMinValue] = [absIntMinValue, absIntMaxValue];
-  }
-
-  return (
-    Math.floor(Math.random() * (absIntMaxValue - absIntMinValue + 1)) +
-    absIntMinValue
-  );
-};
-
-/**
- * Проверка максимальной длины строки
- * @param {string} checkedString строка для проверки
- * @param {number} maxStringLength максимальная длина строки
- * @return {boolean} true, если строка проходит по длине, и false — если не проходит
- */
-const checkMaxStringLength = (checkedString, maxStringLength) =>
-  checkedString.length <= maxStringLength;
-
-getRandomInt(0, 10);
-checkMaxStringLength('Keks', 5);
-
 const NAMES = [
   'Иван',
   'Олег',
@@ -88,6 +55,39 @@ const MAX_NUMBER_IN_AVATAR_NAME = 6;
 const MIN_LIKES_COUNT = 15;
 const MAX_LIKES_COUNT = 200;
 
+/**
+ * {@link https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random#%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5_%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%BE%D0%B3%D0%BE_%D1%86%D0%B5%D0%BB%D0%BE%D0%B3%D0%BE_%D1%87%D0%B8%D1%81%D0%BB%D0%B0_%D0%B2_%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D0%BE%D0%BC_%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D0%B2%D0%B0%D0%BB%D0%B5_%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B8%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE Источник}.
+ * Возвращает случайное положительное целое число из переданного положительного диапазона включительно
+ * @param {number} minValue мин. значение в диапазоне (положительное целое число, включая ноль)
+ * @param {number} maxValue мак. значение в диапазоне (положительное целое число, включая ноль)
+ * @return {number}
+ */
+const getRandomInt = (minValue, maxValue) => {
+  let absIntMinValue = Math.floor(Math.abs(minValue));
+  let absIntMaxValue = Math.floor(Math.abs(maxValue));
+
+  if (absIntMinValue > absIntMaxValue) {
+    [absIntMaxValue, absIntMinValue] = [absIntMinValue, absIntMaxValue];
+  }
+
+  return (
+    Math.floor(Math.random() * (absIntMaxValue - absIntMinValue + 1)) +
+    absIntMinValue
+  );
+};
+
+/**
+ * Проверка максимальной длины строки
+ * @param {string} checkedString строка для проверки
+ * @param {number} maxStringLength максимальная длина строки
+ * @return {boolean} true, если строка проходит по длине, и false — если не проходит
+ */
+const checkMaxStringLength = (checkedString, maxStringLength) =>
+  checkedString.length <= maxStringLength;
+
+getRandomInt(0, 10);
+checkMaxStringLength('Keks', 5);
+
 const getRandomArrayElement = (elements) =>
   elements[getRandomInt(0, elements.length - 1)];
 
@@ -96,16 +96,8 @@ const getRandomArrayElement = (elements) =>
  */
 const getRandomMessage = () => {
   const sentenceCount = getRandomInt(MIN_MESSAGES_COUNT, MAX_MESSAGES_COUNT);
-  let message = '';
 
-  // eslint-disable-next-line id-length
-  for(let i = 0; i< sentenceCount; i++){
-    message += ` ${getRandomArrayElement(MESSAGES)}`;
-  }
-
-  message = message.substr(1);
-
-  return message;
+  return Array(sentenceCount).fill().map(() => getRandomArrayElement(MESSAGES)).join(' ');
 };
 
 const createRandomComment = (id) => ({
@@ -132,7 +124,7 @@ const createRandomComments = () => {
     .map((_element, index) => index + 1);
 
   let randomIndex;
-  const comments = new Array(PHOTO_COUNT).fill([]);//.map(()=>new Array()); //без map каждый новый элемент будет не независимым массивом, а ссылкой на 1 и тот же
+  const comments = new Array(PHOTO_COUNT).fill().map(()=>[]);
 
   randomCommentsCountsPerItem.forEach((commentsCount, index) => {
 
