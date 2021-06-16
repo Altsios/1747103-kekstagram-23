@@ -1,4 +1,4 @@
 import { createPhotoDescriptionList } from './data.js';
+import {renderPictures} from './photo-viewer.js';
 
-// eslint-disable-next-line no-unused-vars
-const photoGallery = createPhotoDescriptionList();
+renderPictures(createPhotoDescriptionList());
