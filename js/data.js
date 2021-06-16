@@ -113,10 +113,10 @@ const randomPhotoComments = createRandomComments();
 
 const createPhotoDescription = (id) => ({
   id: id + MIN_PHOTO_DESCRIPTION_ID,
-  url: `photos/${id}.jpg`,
+  url: `photos/${id + MIN_PHOTO_DESCRIPTION_ID}.jpg`,
   description: getRandomArrayElement(DESCRIPTIONS),
   likes: getRandomInt(MIN_LIKES_COUNT,MAX_LIKES_COUNT),
-  comments: randomPhotoComments[id - 1],
+  comments: randomPhotoComments[id],
 });
 
 const createPhotoDescriptionList = (photoCount) => (new Array(photoCount !== undefined ? photoCount : PHOTO_COUNT).fill().map((_element, index)=>createPhotoDescription(index)));
