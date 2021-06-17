@@ -1,4 +1,4 @@
 import { createPhotoDescriptionList } from './data.js';
-import {renderPictures} from './photo-viewer.js';
+import {renderPictures} from './thumbnails-viewer.js';
 
 renderPictures(createPhotoDescriptionList());
