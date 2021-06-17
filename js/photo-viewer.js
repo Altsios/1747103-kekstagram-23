@@ -1,3 +1,5 @@
+import {isEscEvent} from './utils.js';
+
 const AVATAR_HEIGHT_WIDTH = 35;
 
 const bigPictureElement = document.querySelector('.big-picture');
@@ -6,6 +8,7 @@ const captionElement = bigPictureElement.querySelector('.social__caption');
 const likesElement = bigPictureElement.querySelector('.social__likes');
 const commentsCountElement = bigPictureElement.querySelector('.comments-count');
 const commentsElement = bigPictureElement.querySelector('.social__comments');
+const btnPictureCancelElement = bigPictureElement.querySelector('.big-picture__cancel');
 
 const createCommentElem = ({avatar, name, message}) =>{
   const commentElement = document.createElement('li');
@@ -28,9 +31,32 @@ const createCommentElem = ({avatar, name, message}) =>{
   return commentElement;
 };
 
+const onPhotoViewerCloseClick = () => {
+  // eslint-disable-next-line no-use-before-define
+  hidePhoto();
+};
+
+const onPhotoViewerEscKeydown = (evt) => {
+  if (isEscEvent(evt)) {
+    evt.preventDefault();
+    // eslint-disable-next-line no-use-before-define
+    hidePhoto();
+  }
+};
+
+const hidePhoto = () => {
+  bigPictureElement.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onPhotoViewerEscKeydown);
+  btnPictureCancelElement.removeEventListener('click', onPhotoViewerCloseClick);
+};
+
 const showPhoto = (photoDescription) => {
 
+  document.body.classList.add('modal-open');
   bigPictureElement.classList.remove('hidden');
+  document.addEventListener('keydown', onPhotoViewerEscKeydown);
+  btnPictureCancelElement.addEventListener('click', onPhotoViewerCloseClick);
 
   imgElement.src = photoDescription.url;
   imgElement.alt = photoDescription.description;
