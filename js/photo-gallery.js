@@ -9,18 +9,14 @@ const createPhotoGallery = (photoDescriptionList)=> {
 
     renderPictures(photoDescriptionList);
 
-    const thumbnailToPhotoDescriptionMapper = new Map();
-    const thumbnailElements = picturesElement.querySelectorAll('.picture__img');
-
-    for(let i = 0; i < thumbnailElements.length; i++){
-      thumbnailToPhotoDescriptionMapper.set(thumbnailElements[i], i);
-    }
+    const pictureImgElements = picturesElement.querySelectorAll('.picture__img');
+    const thumbnails = pictureImgElements ? Array.from(pictureImgElements) : [];
 
     picturesElement.onclick = (evt) => {
       const target = evt.target;
       if(target.className === 'picture__img'){
 
-        const photoDescription = photoDescriptionList[thumbnailToPhotoDescriptionMapper.get(target)];
+        const photoDescription = photoDescriptionList[thumbnails.indexOf(target)];
 
         if(photoDescription){
           showPhoto(photoDescription);
