@@ -10,6 +10,17 @@ const commentsCountElement = bigPictureElement.querySelector('.comments-count');
 const commentsElement = bigPictureElement.querySelector('.social__comments');
 const btnPictureCancelElement = bigPictureElement.querySelector('.big-picture__cancel');
 
+//временно скрываем блоки
+const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
+if(commentCountElement){
+  commentCountElement.classList.add('hidden');
+}
+
+const commentsLoader = bigPictureElement.querySelector('.comments-loader');
+if(commentCountElement){
+  commentsLoader.classList.add('hidden');
+}
+
 const createCommentElem = ({avatar, name, message}) =>{
   const commentElement = document.createElement('li');
   commentElement.classList.add('social__comment');
