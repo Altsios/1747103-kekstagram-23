@@ -5,26 +5,28 @@ const picturesElement = document.querySelector('.pictures');
 
 const createPhotoGallery = (photoDescriptionList)=> {
 
-  if(photoDescriptionList && photoDescriptionList.length > 0){
+  if(picturesElement && photoDescriptionList && photoDescriptionList.length > 0){
 
     renderPictures(photoDescriptionList);
 
-    if(picturesElement){
-      picturesElement.onclick = (evt) => {
-        const target = evt.target;
-        if(target.className === 'picture__img'){
+    const thumbnailToPhotoDescriptionMapper = new Map();
+    const thumbnailElements = picturesElement.querySelectorAll('.picture__img');
 
-          const pictureBaseUrl = target.src;
-          const baseUrl = location.origin + location.pathname;
-          const pictureUrl = pictureBaseUrl.replace(baseUrl,'');
-
-          const photoDescription = photoDescriptionList.find((photo) => photo.url === pictureUrl);
-          if(photoDescription){
-            showPhoto(photoDescription);
-          }
-        }
-      };
+    for(let i = 0; i < thumbnailElements.length; i++){
+      thumbnailToPhotoDescriptionMapper.set(thumbnailElements[i], i);
     }
+
+    picturesElement.onclick = (evt) => {
+      const target = evt.target;
+      if(target.className === 'picture__img'){
+
+        const photoDescription = photoDescriptionList[thumbnailToPhotoDescriptionMapper.get(target)];
+
+        if(photoDescription){
+          showPhoto(photoDescription);
+        }
+      }
+    };
   }
 };
 
