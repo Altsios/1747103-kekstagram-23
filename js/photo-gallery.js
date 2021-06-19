@@ -5,7 +5,7 @@ const picturesElement = document.querySelector('.pictures');
 
 const createPhotoGallery = (photoDescriptionList)=> {
 
-  if(picturesElement && photoDescriptionList && photoDescriptionList.length > 0){
+  if(photoDescriptionList && photoDescriptionList.length > 0){
 
     renderPictures(photoDescriptionList);
 
