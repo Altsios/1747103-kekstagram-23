@@ -1,4 +1,4 @@
 import { createPhotoDescriptionList } from './data.js';
-import {renderPictures} from './photo-viewer.js';
+import {createPhotoGallery} from './photo-gallery.js';
 
-renderPictures(createPhotoDescriptionList());
+createPhotoGallery(createPhotoDescriptionList());

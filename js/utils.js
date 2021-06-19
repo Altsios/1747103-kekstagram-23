@@ -28,4 +28,6 @@ const getRandomInt = (minValue, maxValue) => {
 const checkMaxStringLength = (checkedString, maxStringLength) =>
   checkedString.length <= maxStringLength;
 
-export {getRandomInt, checkMaxStringLength};
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export {getRandomInt, checkMaxStringLength, isEscEvent};
