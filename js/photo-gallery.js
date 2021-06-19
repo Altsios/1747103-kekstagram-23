@@ -18,9 +18,7 @@ const createPhotoGallery = (photoDescriptionList)=> {
 
         const photoDescription = photoDescriptionList[thumbnails.indexOf(target)];
 
-        if(photoDescription){
-          showPhoto(photoDescription);
-        }
+        photoDescription && showPhoto(photoDescription);
       }
     };
   }
