@@ -59,18 +59,8 @@ const renderComments = (comments) => {
   commentsCountElement.textContent = comments.length;
 };
 
-const onPhotoViewerCloseClick = () => {
-  // eslint-disable-next-line no-use-before-define
-  hidePhoto();
-};
-
-const onPhotoViewerEscKeydown = (evt) => {
-  if (isEscEvent(evt)) {
-    evt.preventDefault();
-    // eslint-disable-next-line no-use-before-define
-    hidePhoto();
-  }
-};
+let onPhotoViewerEscKeydown = undefined;
+let onPhotoViewerCloseClick = undefined;
 
 const hidePhoto = () => {
 
@@ -79,6 +69,17 @@ const hidePhoto = () => {
   document.removeEventListener('keydown', onPhotoViewerEscKeydown);
 
   btnPictureCancelElement.removeEventListener('click', onPhotoViewerCloseClick);
+};
+
+onPhotoViewerCloseClick = () => {
+  hidePhoto();
+};
+
+onPhotoViewerEscKeydown = (evt) => {
+  if (isEscEvent(evt)) {
+    evt.preventDefault();
+    hidePhoto();
+  }
 };
 
 const showPhoto = (photoDescription) => {
