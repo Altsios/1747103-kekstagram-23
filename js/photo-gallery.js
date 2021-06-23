@@ -12,15 +12,15 @@ const createPhotoGallery = (photoDescriptionList)=> {
     const pictureImgElements = picturesElement.querySelectorAll('.picture__img');
     const thumbnails = pictureImgElements ? Array.from(pictureImgElements) : [];
 
-    picturesElement.onclick = (evt) => {
+    picturesElement.addEventListener('click',(evt) => {
       const target = evt.target;
-      if(target.className === 'picture__img'){
+      if(target.matches('.picture__img')){
 
         const photoDescription = photoDescriptionList[thumbnails.indexOf(target)];
 
         photoDescription && showPhoto(photoDescription);
       }
-    };
+    });
   }
 };
 
