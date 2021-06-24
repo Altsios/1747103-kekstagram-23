@@ -1,5 +1,10 @@
 import {isEscEvent} from './utils.js';
 
+const MAX_HASHTAG_COUNT = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const HASHTAG_WRONG_SYMBOLS_PATTERN = /[^#\d\sа-яa-z]+/i;
+const HASHTAG_PATTERN_STR = `^#[\\dа-яa-z]{1,${MAX_HASHTAG_LENGTH - 1}}$`;
+
 const photoUploaderForm = document.querySelector('#upload-select-image');
 const fileInputElement = photoUploaderForm.querySelector('#upload-file');
 const imgEditorElement = photoUploaderForm.querySelector('.img-upload__overlay');
@@ -14,10 +19,45 @@ const onPhotoUploaderUserInputKeyDown = (evt) => {
   evt.stopPropagation();
 };
 
+const onPhotoUploaderTextHashTagInput = () => {
+
+  const hashTagsStr = textHashTagsElement.value;
+  const invalidities = new Set();
+
+  if(hashTagsStr){
+    if (HASHTAG_WRONG_SYMBOLS_PATTERN.test(hashTagsStr)) {
+      invalidities.add('Хэш-теги содержат некорректные символы! Допускаются: #, цифры, буквы и пробел в качестве разделителя.');
+    }
+
+    const hashTagArr = hashTagsStr.split(' ').filter((ht) => ht);
+
+    if(hashTagArr.length > MAX_HASHTAG_COUNT){
+      invalidities.add('Нельзя указать больше 5 хэш-тегов!');
+    }
+
+    hashTagArr.forEach((ht, index) => {
+      if(!new RegExp(HASHTAG_PATTERN_STR, 'i').test(ht)){
+        invalidities.add(`Неверный формат хэш-тэга: "${ht}". Хэш-тег должен начинаться с "#" и содержать от 1 до ${MAX_HASHTAG_LENGTH - 1} цифро-буквенных символов.`);
+      }
+
+      const hashTagInLowerCase = ht.toLowerCase();
+
+      if(hashTagArr.some((elem, elemIdx) => elem.toLowerCase() === hashTagInLowerCase && index < elemIdx)){
+        invalidities.add(`Хэш-тег ${hashTagInLowerCase} уже указан!`);
+      }
+    });
+  }
+
+  textHashTagsElement.setCustomValidity(invalidities.size > 0 ? Array.from(invalidities).join('\n') : '');
+  textHashTagsElement.reportValidity();
+};
+
 const clearFormFields = () => {
   fileInputElement.value = null;
   textHashTagsElement.value = null;
   textDescriptionElement.value = null;
+
+  textHashTagsElement.setCustomValidity('');
 };
 
 const closePhotoUploaderForm = () =>{
@@ -28,6 +68,7 @@ const closePhotoUploaderForm = () =>{
   btnUploadCancelElement.removeEventListener('click', onPhotoUploaderCloseClick);
 
   textHashTagsElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+  textHashTagsElement.removeEventListener('input', onPhotoUploaderTextHashTagInput);
   textDescriptionElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
 
   clearFormFields();
@@ -51,6 +92,7 @@ const openPhotoUploaderForm = () => {
   btnUploadCancelElement.addEventListener('click', onPhotoUploaderCloseClick);
 
   textHashTagsElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+  textHashTagsElement.addEventListener('input', onPhotoUploaderTextHashTagInput);
   textDescriptionElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
 };
 
@@ -61,7 +103,7 @@ const onPhotoUploaderInputChanged = () =>{
 fileInputElement.addEventListener('change', onPhotoUploaderInputChanged);
 
 const setPhotoUploaderFormSubmit = () => {
-
+  //заготовка под работу с api
 };
 
 export {setPhotoUploaderFormSubmit};
