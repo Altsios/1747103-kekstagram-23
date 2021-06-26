@@ -3,7 +3,7 @@ import {isEscEvent} from './utils.js';
 const MAX_HASHTAG_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
 const HASHTAG_WRONG_SYMBOLS_PATTERN = /[^#\d\sа-яa-z]+/i;
-const HASHTAG_PATTERN_STR = `^#[\\dа-яa-z]{1,${MAX_HASHTAG_LENGTH - 1}}$`;
+const HASHTAG_PATTERN = new RegExp(`^#[\\dа-яa-z]{1,${MAX_HASHTAG_LENGTH - 1}}$`, 'i');
 
 const photoUploaderForm = document.querySelector('#upload-select-image');
 const fileInputElement = photoUploaderForm.querySelector('#upload-file');
@@ -20,8 +20,13 @@ const onPhotoUploaderUserInputKeyDown = (evt) => {
 };
 
 const onPhotoUploaderTextHashTagInput = () => {
+  textHashTagsElement.setCustomValidity('');
+  textHashTagsElement.reportValidity();
+};
 
-  const hashTagsStr = textHashTagsElement.value;
+const onPhotoUploaderTextHashTagBlur = () => {
+
+  const hashTagsStr = textHashTagsElement.value.trim();
   const invalidities = new Set();
 
   if(hashTagsStr){
@@ -29,18 +34,18 @@ const onPhotoUploaderTextHashTagInput = () => {
       invalidities.add('Хэш-теги содержат некорректные символы! Допускаются: #, цифры, буквы и пробел в качестве разделителя.');
     }
 
-    const hashTagArr = hashTagsStr.split(' ').filter((ht) => ht);
+    const hashTagArr = hashTagsStr.split(' ').filter((hashTag) => hashTag);
 
     if(hashTagArr.length > MAX_HASHTAG_COUNT){
       invalidities.add('Нельзя указать больше 5 хэш-тегов!');
     }
 
-    hashTagArr.forEach((ht, index) => {
-      if(!new RegExp(HASHTAG_PATTERN_STR, 'i').test(ht)){
-        invalidities.add(`Неверный формат хэш-тэга: "${ht}". Хэш-тег должен начинаться с "#" и содержать от 1 до ${MAX_HASHTAG_LENGTH - 1} цифро-буквенных символов.`);
+    hashTagArr.forEach((hashTag, index) => {
+      if(!HASHTAG_PATTERN.test(hashTag)){
+        invalidities.add(`Неверный формат хэш-тэга: "${hashTag}". Хэш-тег должен начинаться с "#" и содержать от 1 до ${MAX_HASHTAG_LENGTH - 1} цифро-буквенных символов.`);
       }
 
-      const hashTagInLowerCase = ht.toLowerCase();
+      const hashTagInLowerCase = hashTag.toLowerCase();
 
       if(hashTagArr.some((elem, elemIdx) => elem.toLowerCase() === hashTagInLowerCase && index < elemIdx)){
         invalidities.add(`Хэш-тег ${hashTagInLowerCase} уже указан!`);
@@ -68,6 +73,7 @@ const closePhotoUploaderForm = () =>{
   btnUploadCancelElement.removeEventListener('click', onPhotoUploaderCloseClick);
 
   textHashTagsElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+  textHashTagsElement.removeEventListener('blur', onPhotoUploaderTextHashTagBlur);
   textHashTagsElement.removeEventListener('input', onPhotoUploaderTextHashTagInput);
   textDescriptionElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
 
@@ -92,6 +98,7 @@ const openPhotoUploaderForm = () => {
   btnUploadCancelElement.addEventListener('click', onPhotoUploaderCloseClick);
 
   textHashTagsElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+  textHashTagsElement.addEventListener('blur', onPhotoUploaderTextHashTagBlur);
   textHashTagsElement.addEventListener('input', onPhotoUploaderTextHashTagInput);
   textDescriptionElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
 };
