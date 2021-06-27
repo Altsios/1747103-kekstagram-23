@@ -1403,3 +1403,7 @@ main {
 .hidden {
   display: none;
 }
+
+input:invalid {
+  background-color: #df6262;
+}
