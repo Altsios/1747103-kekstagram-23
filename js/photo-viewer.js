@@ -14,11 +14,7 @@ const btnPictureCancelElement = bigPictureElement.querySelector('.big-picture__c
 const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
 const commentsLoader = bigPictureElement.querySelector('.comments-loader');
 
-let renderNextComments = null;
-
-const onPhotoViewerCommentsLoaderClick = () => {
-  renderNextComments();
-};
+let currentPhoto;
 
 const setLoadedCommentsCount = (value) => {
   commentCountElement.childNodes[0].textContent = `${value} из `;
@@ -45,48 +41,47 @@ const createCommentElem = ({avatar, name, message}) =>{
   return commentElement;
 };
 
-const renderPhoto = ({url, description, likes}) => {
+const renderNextComments = () => {
 
-  imgElement.src = url;
-  imgElement.alt = description;
+  const comments = currentPhoto.comments;
 
-  captionElement.textContent = description;
+  const commentsFragment = document.createDocumentFragment();
 
-  likesElement.textContent = likes;
+  const firstCommentOnPageIndex = commentsElement.childElementCount;
+  const lastCommentOnPageIndex =  commentsElement.childElementCount + SHOWED_COMMENTS_COUNT;
+
+  comments.slice(firstCommentOnPageIndex, lastCommentOnPageIndex)
+    .forEach((comment) => commentsFragment.appendChild(createCommentElem(comment)));
+  commentsElement.appendChild(commentsFragment);
+
+  const loadedCommentsCount = commentsElement.childElementCount;
+  if(loadedCommentsCount === comments.length){
+    commentsLoader.classList.add('hidden');
+  }
+  else{
+    commentsLoader.classList.remove('hidden');
+  }
+
+  setLoadedCommentsCount(loadedCommentsCount);
 };
 
-const setCommentsInfo = (comments) => {
-  commentsCountElement.textContent = comments.length;
+const onPhotoViewerCommentsLoaderClick = () => {
+  renderNextComments();
+};
+
+const renderPhoto = () => {
+
+  imgElement.src = currentPhoto.url;
+  imgElement.alt = currentPhoto.description;
+
+  captionElement.textContent = currentPhoto.description;
+
+  likesElement.textContent = currentPhoto.likes;
+};
+
+const setCommentsInfo = () => {
+  commentsCountElement.textContent = currentPhoto.comments.length;
   commentsElement.innerHTML ='';
-};
-
-const createCommentsRenderer = (comments) => {
-
-  let page = 0;
-
-  return () => {
-
-    const commentsFragment = document.createDocumentFragment();
-    const firstCommentOnPageIndex = page * SHOWED_COMMENTS_COUNT;
-    const lastCommentOnPageIndex = (page + 1) * SHOWED_COMMENTS_COUNT;
-
-    comments.slice(firstCommentOnPageIndex, lastCommentOnPageIndex).forEach((comment) => commentsFragment.appendChild(createCommentElem(comment)));
-    commentsElement.appendChild(commentsFragment);
-
-    let loadedCommentsCount;
-    if(lastCommentOnPageIndex >= comments.length){
-      commentsLoader.classList.add('hidden');
-      loadedCommentsCount = comments.length;
-    }
-    else{
-      commentsLoader.classList.remove('hidden');
-      loadedCommentsCount= lastCommentOnPageIndex;
-    }
-
-    setLoadedCommentsCount(loadedCommentsCount);
-
-    page++;
-  };
 };
 
 let onPhotoViewerEscKeydown = undefined;
@@ -100,8 +95,6 @@ const hidePhoto = () => {
 
   btnPictureCancelElement.removeEventListener('click', onPhotoViewerCloseClick);
   commentsLoader.removeEventListener('click', onPhotoViewerCommentsLoaderClick);
-
-  renderNextComments = null;
 };
 
 onPhotoViewerCloseClick = () => {
@@ -117,18 +110,20 @@ onPhotoViewerEscKeydown = (evt) => {
 
 const showPhoto = (photoDescription) => {
 
-  renderNextComments = createCommentsRenderer(photoDescription.comments);
+  currentPhoto = photoDescription;
 
-  document.body.classList.add('modal-open');
-  bigPictureElement.classList.remove('hidden');
+  if(currentPhoto){
+    document.body.classList.add('modal-open');
+    bigPictureElement.classList.remove('hidden');
 
-  document.addEventListener('keydown', onPhotoViewerEscKeydown);
-  btnPictureCancelElement.addEventListener('click', onPhotoViewerCloseClick);
-  commentsLoader.addEventListener('click', onPhotoViewerCommentsLoaderClick);
+    document.addEventListener('keydown', onPhotoViewerEscKeydown);
+    btnPictureCancelElement.addEventListener('click', onPhotoViewerCloseClick);
+    commentsLoader.addEventListener('click', onPhotoViewerCommentsLoaderClick);
 
-  setCommentsInfo(photoDescription.comments);
-  renderPhoto(photoDescription);
-  renderNextComments();
+    setCommentsInfo();
+    renderPhoto();
+    renderNextComments();
+  }
 };
 
 export {showPhoto};
