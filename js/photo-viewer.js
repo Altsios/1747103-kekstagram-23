@@ -1,6 +1,7 @@
 import {isEscEvent} from './utils.js';
 
 const AVATAR_HEIGHT_WIDTH = 35;
+const SHOWED_COMMENTS_COUNT = 5;
 
 const bigPictureElement = document.querySelector('.big-picture');
 const imgElement = bigPictureElement.querySelector('.big-picture__img img');
@@ -10,12 +11,14 @@ const commentsCountElement = bigPictureElement.querySelector('.comments-count');
 const commentsElement = bigPictureElement.querySelector('.social__comments');
 const btnPictureCancelElement = bigPictureElement.querySelector('.big-picture__cancel');
 
-//временно скрываем блоки
 const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
-commentCountElement.classList.add('hidden');
-
 const commentsLoader = bigPictureElement.querySelector('.comments-loader');
-commentsLoader.classList.add('hidden');
+
+let currentPhoto;
+
+const setLoadedCommentsCount = (value) => {
+  commentCountElement.childNodes[0].textContent = `${value} из `;
+};
 
 const createCommentElem = ({avatar, name, message}) =>{
   const commentElement = document.createElement('li');
@@ -38,25 +41,47 @@ const createCommentElem = ({avatar, name, message}) =>{
   return commentElement;
 };
 
-const renderPhoto = ({url, description, likes}) => {
+const renderNextComments = () => {
 
-  imgElement.src = url;
-  imgElement.alt = description;
+  const comments = currentPhoto.comments;
 
-  captionElement.textContent = description;
-
-  likesElement.textContent = likes;
-};
-
-const renderComments = (comments) => {
-
-  commentsElement.innerHTML ='';
   const commentsFragment = document.createDocumentFragment();
 
-  comments.forEach((comment) => commentsFragment.appendChild(createCommentElem(comment)));
+  const firstCommentOnPageIndex = commentsElement.childElementCount;
+  const lastCommentOnPageIndex =  commentsElement.childElementCount + SHOWED_COMMENTS_COUNT;
+
+  comments.slice(firstCommentOnPageIndex, lastCommentOnPageIndex)
+    .forEach((comment) => commentsFragment.appendChild(createCommentElem(comment)));
   commentsElement.appendChild(commentsFragment);
 
-  commentsCountElement.textContent = comments.length;
+  const loadedCommentsCount = commentsElement.childElementCount;
+  if(loadedCommentsCount === comments.length){
+    commentsLoader.classList.add('hidden');
+  }
+  else{
+    commentsLoader.classList.remove('hidden');
+  }
+
+  setLoadedCommentsCount(loadedCommentsCount);
+};
+
+const onPhotoViewerCommentsLoaderClick = () => {
+  renderNextComments();
+};
+
+const renderPhoto = () => {
+
+  imgElement.src = currentPhoto.url;
+  imgElement.alt = currentPhoto.description;
+
+  captionElement.textContent = currentPhoto.description;
+
+  likesElement.textContent = currentPhoto.likes;
+};
+
+const setCommentsInfo = () => {
+  commentsCountElement.textContent = currentPhoto.comments.length;
+  commentsElement.innerHTML ='';
 };
 
 let onPhotoViewerEscKeydown = undefined;
@@ -69,6 +94,7 @@ const hidePhoto = () => {
   document.removeEventListener('keydown', onPhotoViewerEscKeydown);
 
   btnPictureCancelElement.removeEventListener('click', onPhotoViewerCloseClick);
+  commentsLoader.removeEventListener('click', onPhotoViewerCommentsLoaderClick);
 };
 
 onPhotoViewerCloseClick = () => {
@@ -84,15 +110,20 @@ onPhotoViewerEscKeydown = (evt) => {
 
 const showPhoto = (photoDescription) => {
 
-  document.body.classList.add('modal-open');
-  bigPictureElement.classList.remove('hidden');
+  currentPhoto = photoDescription;
 
-  document.addEventListener('keydown', onPhotoViewerEscKeydown);
+  if(currentPhoto){
+    document.body.classList.add('modal-open');
+    bigPictureElement.classList.remove('hidden');
 
-  btnPictureCancelElement.addEventListener('click', onPhotoViewerCloseClick);
+    document.addEventListener('keydown', onPhotoViewerEscKeydown);
+    btnPictureCancelElement.addEventListener('click', onPhotoViewerCloseClick);
+    commentsLoader.addEventListener('click', onPhotoViewerCommentsLoaderClick);
 
-  renderPhoto(photoDescription);
-  renderComments(photoDescription.comments);
+    setCommentsInfo();
+    renderPhoto();
+    renderNextComments();
+  }
 };
 
 export {showPhoto};
