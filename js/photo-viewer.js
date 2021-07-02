@@ -47,10 +47,10 @@ const renderNextComments = () => {
 
   const commentsFragment = document.createDocumentFragment();
 
-  const firstCommentOnPageIndex = commentsElement.childElementCount;
-  const lastCommentOnPageIndex =  commentsElement.childElementCount + SHOWED_COMMENTS_COUNT;
+  const renderCommentsFromIdx = commentsElement.childElementCount;
+  const renderCommentsToIdx =  renderCommentsFromIdx + SHOWED_COMMENTS_COUNT;
 
-  comments.slice(firstCommentOnPageIndex, lastCommentOnPageIndex)
+  comments.slice(renderCommentsFromIdx, renderCommentsToIdx)
     .forEach((comment) => commentsFragment.appendChild(createCommentElem(comment)));
   commentsElement.appendChild(commentsFragment);
 

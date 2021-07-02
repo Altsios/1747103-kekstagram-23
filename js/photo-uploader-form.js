@@ -1,4 +1,6 @@
 import {isEscEvent} from './utils.js';
+import {addScaling, removeScaling} from './photo-scaler.js';
+import {addPhotoFilterEffects, removePhotoFilterEffects} from './photo-filter.js';
 
 const MAX_HASHTAG_COUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
@@ -78,6 +80,8 @@ const closePhotoUploaderForm = () =>{
   textDescriptionElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
 
   clearFormFields();
+  removeScaling();
+  removePhotoFilterEffects();
 };
 
 onPhotoUploaderEscKeydown = (evt) => {
@@ -101,6 +105,9 @@ const openPhotoUploaderForm = () => {
   textHashTagsElement.addEventListener('blur', onPhotoUploaderTextHashTagBlur);
   textHashTagsElement.addEventListener('input', onPhotoUploaderTextHashTagInput);
   textDescriptionElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+
+  addScaling();
+  addPhotoFilterEffects();
 };
 
 const onPhotoUploaderInputChanged = () =>{
