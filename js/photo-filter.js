@@ -17,12 +17,12 @@ const EFFECT_TEMPLATE_STR_REPLACEMENT = '{EFF_LVL}';
 
 const EFFECTS_PREVIEW_BASE_CSS_CLASS = 'effects__preview--';
 
-const EFFECT_TO_FILTER = {
-  chrome: `grayscale(${EFFECT_TEMPLATE_STR_REPLACEMENT})`,
-  sepia: `sepia(${EFFECT_TEMPLATE_STR_REPLACEMENT})`,
-  marvin: `invert(${EFFECT_TEMPLATE_STR_REPLACEMENT}%)`,
-  phobos: `blur(${EFFECT_TEMPLATE_STR_REPLACEMENT}px)`,
-  heat: `brightness(${EFFECT_TEMPLATE_STR_REPLACEMENT}`,
+const effectToFilter = {
+  [CHROME_EFFECT]: `grayscale(${EFFECT_TEMPLATE_STR_REPLACEMENT})`,
+  [SEPIA_EFFECT]: `sepia(${EFFECT_TEMPLATE_STR_REPLACEMENT})`,
+  [MARVIN_EFFECT]: `invert(${EFFECT_TEMPLATE_STR_REPLACEMENT}%)`,
+  [PHOBOS_EFFECT]: `blur(${EFFECT_TEMPLATE_STR_REPLACEMENT}px)`,
+  [HEAT_EFFECT]: `brightness(${EFFECT_TEMPLATE_STR_REPLACEMENT}`,
 };
 
 const imgUploadEffectLevelElement = document.querySelector('.img-upload__effect-level');
@@ -94,7 +94,7 @@ const configurePhotoEditor = (imgEffect) => {
   currentPhotoEffectCSSClass = newPhotoEffectCSSClass;
   imgUploadPreview.classList.add(newPhotoEffectCSSClass);
 
-  currentFilterEffect = EFFECT_TO_FILTER[imgEffect];
+  currentFilterEffect = effectToFilter[imgEffect];
 
   const sliderOptions = getSliderOptionsByEffect(imgEffect);
 
