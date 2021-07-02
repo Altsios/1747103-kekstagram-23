@@ -1,6 +1,6 @@
 const SCALE_STEP = 25;
 const MAX_SCALE = 100;
-const MIN_SCALE = 0;
+const MIN_SCALE = 25;
 const DEFAULT_SCALE = 100;
 
 const scaleSmallerBtn = document.querySelector('.scale__control--smaller');

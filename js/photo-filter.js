@@ -17,6 +17,14 @@ const EFFECT_TEMPLATE_STR_REPLACEMENT = '{EFF_LVL}';
 
 const EFFECTS_PREVIEW_BASE_CSS_CLASS = 'effects__preview--';
 
+const EFFECT_TO_FILTER = {
+  chrome: `grayscale(${EFFECT_TEMPLATE_STR_REPLACEMENT})`,
+  sepia: `sepia(${EFFECT_TEMPLATE_STR_REPLACEMENT})`,
+  marvin: `invert(${EFFECT_TEMPLATE_STR_REPLACEMENT}%)`,
+  phobos: `blur(${EFFECT_TEMPLATE_STR_REPLACEMENT}px)`,
+  heat: `brightness(${EFFECT_TEMPLATE_STR_REPLACEMENT}`,
+};
+
 const imgUploadEffectLevelElement = document.querySelector('.img-upload__effect-level');
 const sliderElement = imgUploadEffectLevelElement.querySelector('.effect-level__slider');
 const effectsListElement = document.querySelector('.effects__list');
@@ -68,24 +76,6 @@ const getSliderOptionsByEffect = (imgEffect) =>{
   return sliderOptions;
 };
 
-const getFilterByEffect = (imgEffect) =>{
-
-  switch(imgEffect){
-    case CHROME_EFFECT:
-      return `grayscale(${EFFECT_TEMPLATE_STR_REPLACEMENT})`;
-    case SEPIA_EFFECT:
-      return `sepia(${EFFECT_TEMPLATE_STR_REPLACEMENT})`;
-    case MARVIN_EFFECT:
-      return `invert(${EFFECT_TEMPLATE_STR_REPLACEMENT}%)`;
-    case PHOBOS_EFFECT:
-      return `blur(${EFFECT_TEMPLATE_STR_REPLACEMENT}px)`;
-    case HEAT_EFFECT:
-      return `brightness(${EFFECT_TEMPLATE_STR_REPLACEMENT}`;
-  }
-
-  return null;
-};
-
 const applyFilterEffectToImg = (value) => {
 
   imgUploadPreview.style.filter = currentFilterEffect ? currentFilterEffect.replace(EFFECT_TEMPLATE_STR_REPLACEMENT, value) : null;
@@ -104,7 +94,7 @@ const configurePhotoEditor = (imgEffect) => {
   currentPhotoEffectCSSClass = newPhotoEffectCSSClass;
   imgUploadPreview.classList.add(newPhotoEffectCSSClass);
 
-  currentFilterEffect = getFilterByEffect(imgEffect);
+  currentFilterEffect = EFFECT_TO_FILTER[imgEffect];
 
   const sliderOptions = getSliderOptionsByEffect(imgEffect);
 
@@ -134,10 +124,10 @@ const addPhotoFilterEffects = () => {
 };
 
 const removePhotoFilterEffects = () => {
-  effectsListElement.removePhotoFilterEffects('change', onPhotoFilterEffectsListElementCheck);
+  effectsListElement.removeEventListener('change', onPhotoFilterEffectsListElementCheck);
 };
 
 
-configurePhotoEditor(document.querySelector('.effects__radio:checked').value);
+configurePhotoEditor(effectsListElement.querySelector('.effects__radio:checked').value);
 
 export {addPhotoFilterEffects, removePhotoFilterEffects};
