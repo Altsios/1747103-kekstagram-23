@@ -17,6 +17,16 @@ const textDescriptionElement = photoUploaderForm.querySelector('.text__descripti
 let onPhotoUploaderEscKeydown = undefined;
 let onPhotoUploaderCloseClick = undefined;
 
+let isErrorOccurred = false;
+
+const clearErrorStatus = () => {
+  isErrorOccurred = false;
+};
+
+const setErrorStatus = () => {
+  isErrorOccurred = true;
+};
+
 const onPhotoUploaderUserInputKeyDown = (evt) => {
   evt.stopPropagation();
 };
@@ -68,20 +78,22 @@ const clearFormFields = () => {
 };
 
 const closePhotoUploaderForm = () =>{
-  imgEditorElement.classList.add('hidden');
-  document.body.classList.remove('modal-open');
+  if(!isErrorOccurred){
+    imgEditorElement.classList.add('hidden');
+    document.body.classList.remove('modal-open');
 
-  document.removeEventListener('keydown', onPhotoUploaderEscKeydown);
-  btnUploadCancelElement.removeEventListener('click', onPhotoUploaderCloseClick);
+    document.removeEventListener('keydown', onPhotoUploaderEscKeydown);
+    btnUploadCancelElement.removeEventListener('click', onPhotoUploaderCloseClick);
 
-  textHashTagsElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
-  textHashTagsElement.removeEventListener('blur', onPhotoUploaderTextHashTagBlur);
-  textHashTagsElement.removeEventListener('input', onPhotoUploaderTextHashTagInput);
-  textDescriptionElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+    textHashTagsElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+    textHashTagsElement.removeEventListener('blur', onPhotoUploaderTextHashTagBlur);
+    textHashTagsElement.removeEventListener('input', onPhotoUploaderTextHashTagInput);
+    textDescriptionElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
 
-  clearFormFields();
-  removeScaling();
-  removePhotoFilterEffects();
+    clearFormFields();
+    removeScaling();
+    removePhotoFilterEffects();
+  }
 };
 
 onPhotoUploaderEscKeydown = (evt) => {
@@ -116,8 +128,24 @@ const onPhotoUploaderInputChanged = () =>{
 
 fileInputElement.addEventListener('change', onPhotoUploaderInputChanged);
 
-const setPhotoUploaderFormSubmit = () => {
-  //заготовка под работу с api
+const setPhotoUploaderFormSubmit = (sendData, onSuccess, onFail) => {
+  if (photoUploaderForm) {
+    photoUploaderForm.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+
+      sendData(
+        () => {
+          clearErrorStatus();
+          onSuccess(closePhotoUploaderForm);
+        },
+        () => {
+          setErrorStatus();
+          onFail(clearErrorStatus);
+        },
+        new FormData(evt.target),
+      );
+    });
+  }
 };
 
 export {setPhotoUploaderFormSubmit};
