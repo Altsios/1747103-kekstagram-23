@@ -1416,3 +1416,32 @@ main {
 .hidden {
   display: none;
 }
+
+.topErrorMessage {
+  background-color: red;
+  animation: fade 1s 2s forwards;
+  z-Index: 100;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  padding: 10px 3px;
+  font-size: 30px;
+  text-align: center;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
+  99% {
+    opacity: 0;
+    visibility: hidden;
+    position: relative;
+  }
+  100% {
+    opacity: 0;
+    position: fixed;
+  }
+}

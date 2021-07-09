@@ -3,6 +3,7 @@ const SEPIA_EFFECT = 'sepia';
 const MARVIN_EFFECT = 'marvin';
 const PHOBOS_EFFECT = 'phobos';
 const HEAT_EFFECT = 'heat';
+const NONE_EFFECT = 'none';
 
 const DEFAULT_SLIDER_OPTIONS = {
   range: {
@@ -123,11 +124,16 @@ const addPhotoFilterEffects = () => {
   effectsListElement.addEventListener('change', onPhotoFilterEffectsListElementCheck);
 };
 
+const setInitialPhotoEffects = () => {
+  configurePhotoEditor(NONE_EFFECT);
+};
+
 const removePhotoFilterEffects = () => {
   effectsListElement.removeEventListener('change', onPhotoFilterEffectsListElementCheck);
+  setInitialPhotoEffects();
 };
 
 
-configurePhotoEditor(effectsListElement.querySelector('.effects__radio:checked').value);
+setInitialPhotoEffects();
 
 export {addPhotoFilterEffects, removePhotoFilterEffects};
