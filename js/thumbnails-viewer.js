@@ -3,6 +3,12 @@ const pictureTemplateElement = document.querySelector('#picture');
 
 const renderPictures = (photoDescriptionList) => {
 
+  const pictureImgElements = picturesElement.querySelectorAll('.picture');
+
+  for(const picture of pictureImgElements){
+    picture.remove();
+  }
+
   const picturesFragment = document.createDocumentFragment();
   const pictureTemplate = pictureTemplateElement
     .content
