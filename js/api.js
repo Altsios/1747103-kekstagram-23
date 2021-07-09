@@ -6,9 +6,7 @@ const Url = {
 const getData = (onSuccess, onFail) => {
   fetch(Url.DATA)
     .then((response) => response.json())
-    .then((photo) => {
-      onSuccess(photo);
-    })
+    .then(onSuccess)
     .catch(() => {
       onFail('Не удалось загрузить фотографии:(');
     });
@@ -24,7 +22,7 @@ const sendData = (onSuccess, onFail, body) => {
   )
     .then((response) => {
       if (!response.ok) {
-        throw response;
+        onFail();
       }
       onSuccess();
     })

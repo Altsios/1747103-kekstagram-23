@@ -14,25 +14,19 @@ const hideMessage = (element) => {
 
 const addKeydownEventListener = (element, cb) => (evt) => {
   if(isEscEvent(evt)){
-    if(cb){
-      cb();
-    }
+    cb();
     hideMessage(element);
   }
 };
 
 const onAlertShowerBtnClick = (element, cb) => {
-  if(cb){
-    cb();
-  }
+  cb();
   hideMessage(element);
 };
 
 const onAlertShowerClickOutside = (evt, element, selector, cb) => {
   if(evt.target.matches(selector)){
-    if(cb){
-      cb();
-    }
+    cb();
     hideMessage(element);
   }
 };
