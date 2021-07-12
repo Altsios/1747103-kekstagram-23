@@ -1417,6 +1417,10 @@ main {
   display: none;
 }
 
+input:invalid {
+  box-shadow: 0 0 15px 5px red;
+}
+
 .topErrorMessage {
   background-color: red;
   animation: fade 1s 2s forwards;
@@ -1431,17 +1435,6 @@ main {
 }
 
 @keyframes fade {
-  0% {
-    opacity: 1;
-    visibility: visible;
-  }
-  99% {
-    opacity: 0;
-    visibility: hidden;
-    position: relative;
-  }
-  100% {
-    opacity: 0;
-    position: fixed;
-  }
+  50%,100% { opacity: 0 }
+  1% { opacity: 1 }
 }
