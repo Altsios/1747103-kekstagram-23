@@ -3,7 +3,6 @@ const SEPIA_EFFECT = 'sepia';
 const MARVIN_EFFECT = 'marvin';
 const PHOBOS_EFFECT = 'phobos';
 const HEAT_EFFECT = 'heat';
-const NONE_EFFECT = 'none';
 
 const DEFAULT_SLIDER_OPTIONS = {
   range: {
@@ -31,6 +30,7 @@ const sliderElement = imgUploadEffectLevelElement.querySelector('.effect-level__
 const effectsListElement = document.querySelector('.effects__list');
 const effectLevelValueElement = document.querySelector('.effect-level__value');
 const imgUploadPreviewElement = document.querySelector('.img-upload__preview');
+const effectNoneRadioElement = effectsListElement.querySelector('#effect-none');
 
 let currentPhotoEffectCSSClass;
 let currentFilterEffect;
@@ -125,7 +125,8 @@ const addPhotoFilterEffects = () => {
 };
 
 const setInitialPhotoEffects = () => {
-  configurePhotoEditor(NONE_EFFECT);
+  effectNoneRadioElement.checked = true;
+  configurePhotoEditor(effectNoneRadioElement.value);
 };
 
 const removePhotoFilterEffects = () => {
