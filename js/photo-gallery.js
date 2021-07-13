@@ -11,11 +11,16 @@ const imgFiltersContainerElement = document.querySelector('.img-filters');
 const imgFilterElements = imgFiltersContainerElement.querySelectorAll('.img-filters__button');
 
 
-const getRandomPhoto = (photoDescriptionList) => photoDescriptionList.slice().sort(() => Math.random() - 0.5)
-  .slice(RANDOM_PHOTO_FIRST_IDX, COUNT_OF_RANDOM_PHOTO);
+const getRandomPhoto = (photoDescriptionList) =>
+  photoDescriptionList
+    .slice()
+    .sort(() => Math.random() - 0.5)
+    .slice(RANDOM_PHOTO_FIRST_IDX, COUNT_OF_RANDOM_PHOTO);
 
-const getMostDiscussedPhoto = (photoDescriptionList) => photoDescriptionList.slice()
-  .sort((a, b) => b.comments.length - a.comments.length);
+const getMostDiscussedPhoto = (photoDescriptionList) =>
+  photoDescriptionList
+    .slice()
+    .sort((a, b) => b.comments.length - a.comments.length);
 
 const filterToPhotoProcessAction = {
   'filter-random' : getRandomPhoto,
@@ -37,7 +42,9 @@ const reloadPhotoGallery = (photoDescriptionList, filter) => {
   renderPictures(processedPhotoDescriptionList);
 
   const pictureImgElements = picturesElement.querySelectorAll('.picture__img');
-  const thumbnails = pictureImgElements ? Array.from(pictureImgElements) : [];
+  const thumbnails = pictureImgElements
+    ? Array.from(pictureImgElements)
+    : [];
 
   picturesElement.addEventListener('click',(evt) => {
     const target = evt.target;
@@ -67,7 +74,10 @@ const createPhotoGallery = (photoDescriptionList)=> {
     return;
   }
 
-  const reloadPhotoOnFilterClick = debounce((filter) => reloadPhotoGallery(photoDescriptionList, filter),RERENDER_DELAY);
+  const reloadPhotoOnFilterClick = debounce(
+    (filter) => reloadPhotoGallery(photoDescriptionList, filter),
+    RERENDER_DELAY,
+  );
 
   imgFiltersContainerElement.addEventListener('click',(evt) => {
     const target = evt.target;

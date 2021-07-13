@@ -52,15 +52,24 @@ const createPhotoUploadedMsg  = (photoUploadedStatus, templateElement, cb) => {
 
   const messageBtnElement = messageElement.querySelector(`${elementClass}__button`);
 
-  messageElement.addEventListener('click', (evt) => onPhotoUploadedMsgClickOutside(evt, messageElement, elementClass, cb));
-  messageBtnElement.addEventListener('click', () => onPhotoUploadedMsgBtnClick(messageElement, cb));
+  messageElement.addEventListener('click', (evt) =>
+    onPhotoUploadedMsgClickOutside(evt, messageElement, elementClass, cb),
+  );
+
+  messageBtnElement.addEventListener('click', () =>
+    onPhotoUploadedMsgBtnClick(messageElement, cb),
+  );
+
   onPhotoUploadedMsgKeyDown = addKeydownEventListener(messageElement, cb);
   document.addEventListener('keydown', onPhotoUploadedMsgKeyDown);
 };
 
 
-const showSuccessPhotoUploadedMsg = (cb) => createPhotoUploadedMsg(PhotoUploadedStatus.SUCCESS, successTemplateElement, cb);
-const showErrorPhotoUploadedMsg = (cb) => createPhotoUploadedMsg(PhotoUploadedStatus.ERROR, errorTemplateElement, cb);
+const showSuccessPhotoUploadedMsg = (cb) =>
+  createPhotoUploadedMsg(PhotoUploadedStatus.SUCCESS, successTemplateElement, cb);
+
+const showErrorPhotoUploadedMsg = (cb) =>
+  createPhotoUploadedMsg(PhotoUploadedStatus.ERROR, errorTemplateElement, cb);
 
 
 const showErrorMsgOnTop = (message) => {

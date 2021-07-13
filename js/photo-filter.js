@@ -39,7 +39,9 @@ noUiSlider.create(sliderElement, {
   ...DEFAULT_SLIDER_OPTIONS,
   connect: 'lower',
   format: {
-    to: (value) => Number.isInteger(value) ? value.toFixed(0): value.toFixed(1),
+    to: (value) => Number.isInteger(value)
+      ? value.toFixed(0)
+      : value.toFixed(1),
     from: (value) => parseFloat(value),
   },
 });
@@ -78,8 +80,9 @@ const getSliderOptionsByEffect = (imgEffect) =>{
 };
 
 const applyFilterEffectToImg = (value) => {
-
-  imgUploadPreviewElement.style.filter = currentFilterEffect ? currentFilterEffect.replace(EFFECT_TEMPLATE_STR_REPLACEMENT, value) : null;
+  imgUploadPreviewElement.style.filter = currentFilterEffect
+    ? currentFilterEffect.replace(EFFECT_TEMPLATE_STR_REPLACEMENT, value)
+    : null;
 };
 
 sliderElement.noUiSlider.on('update', (values, handle) => {

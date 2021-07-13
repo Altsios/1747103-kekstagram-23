@@ -57,7 +57,9 @@ const validateHashTags = () => {
       invalidities.add('Хэш-теги содержат некорректные символы! Допускаются: #, цифры, буквы и пробел в качестве разделителя.');
     }
 
-    const hashTagArr = hashTagsStr.split(' ').filter((hashTag) => hashTag);
+    const hashTagArr = hashTagsStr
+      .split(' ')
+      .filter((hashTag) => hashTag);
 
     if(hashTagArr.length > MAX_HASHTAG_COUNT){
       invalidities.add('Нельзя указать больше 5 хэш-тегов!');
@@ -76,7 +78,10 @@ const validateHashTags = () => {
     });
   }
 
-  textHashTagsElement.setCustomValidity(invalidities.size > 0 ? Array.from(invalidities).join('\n') : '');
+  textHashTagsElement.setCustomValidity(invalidities.size > 0
+    ? Array.from(invalidities).join('\n')
+    : '');
+
   textHashTagsElement.reportValidity();
 
   return invalidities.size === 0;

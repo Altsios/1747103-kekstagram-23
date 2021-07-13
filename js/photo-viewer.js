@@ -50,8 +50,12 @@ const renderNextComments = () => {
   const renderCommentsFromIdx = commentsElement.childElementCount;
   const renderCommentsToIdx =  renderCommentsFromIdx + SHOWED_COMMENTS_COUNT;
 
-  comments.slice(renderCommentsFromIdx, renderCommentsToIdx)
-    .forEach((comment) => commentsFragment.appendChild(createCommentElem(comment)));
+  comments
+    .slice(renderCommentsFromIdx, renderCommentsToIdx)
+    .forEach((comment) =>
+      commentsFragment.appendChild(createCommentElem(comment)),
+    );
+
   commentsElement.appendChild(commentsFragment);
 
   const loadedCommentsCount = commentsElement.childElementCount;
