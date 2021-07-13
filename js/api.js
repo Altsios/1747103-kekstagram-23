@@ -23,6 +23,7 @@ const sendData = (onSuccess, onFail, body) => {
     .then((response) => {
       if (!response.ok) {
         onFail();
+        return;
       }
       onSuccess();
     })

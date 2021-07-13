@@ -3,38 +3,40 @@ const MAX_SCALE = 100;
 const MIN_SCALE = 25;
 const DEFAULT_SCALE = 100;
 
-const scaleSmallerBtn = document.querySelector('.scale__control--smaller');
-const scaleBiggerBtn = document.querySelector('.scale__control--bigger');
-const scaleControlValueElem = document.querySelector('.scale__control--value');
-const imgUploadPreview = document.querySelector('.img-upload__preview');
+const scaleSmallerBtnElement = document.querySelector('.scale__control--smaller');
+const scaleBiggerBtnElement = document.querySelector('.scale__control--bigger');
+const scaleControlValueElement = document.querySelector('.scale__control--value');
+const imgUploadPreviewElement = document.querySelector('.img-upload__preview');
 
 let scaleValue;
 
 const setScaleValue = (value) => {
-  if(value <= MAX_SCALE && value >= MIN_SCALE){
-    scaleValue = value;
-    scaleControlValueElem.value = `${scaleValue}%`;
-    imgUploadPreview.style.transform = `scale(${scaleValue / 100})`;
+  if(value > MAX_SCALE || value < MIN_SCALE){
+    return;
   }
+
+  scaleValue = value;
+  scaleControlValueElement.value = `${scaleValue}%`;
+  imgUploadPreviewElement.style.transform = `scale(${scaleValue / 100})`;
 };
 
-const onPhotoEditorScaleSmallerBtnClick = () => {
+const onScaleSmallerBtnClick = () => {
   setScaleValue(scaleValue - SCALE_STEP);
 };
 
-const onPhotoEditorScaleBiggerBtnClick = () => {
+const onScaleBiggerBtnClick = () => {
   setScaleValue(scaleValue + SCALE_STEP);
 };
 
 const addScaling = () => {
-  scaleSmallerBtn.addEventListener('click', onPhotoEditorScaleSmallerBtnClick);
-  scaleBiggerBtn.addEventListener('click', onPhotoEditorScaleBiggerBtnClick);
+  scaleSmallerBtnElement.addEventListener('click', onScaleSmallerBtnClick);
+  scaleBiggerBtnElement.addEventListener('click', onScaleBiggerBtnClick);
   setScaleValue(DEFAULT_SCALE);
 };
 
 const removeScaling = () => {
-  scaleSmallerBtn.removeEventListener('click', onPhotoEditorScaleSmallerBtnClick);
-  scaleBiggerBtn.removeEventListener('click', onPhotoEditorScaleBiggerBtnClick);
+  scaleSmallerBtnElement.removeEventListener('click', onScaleSmallerBtnClick);
+  scaleBiggerBtnElement.removeEventListener('click', onScaleBiggerBtnClick);
   setScaleValue(DEFAULT_SCALE);
 };
 

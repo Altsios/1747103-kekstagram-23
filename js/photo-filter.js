@@ -30,7 +30,7 @@ const imgUploadEffectLevelElement = document.querySelector('.img-upload__effect-
 const sliderElement = imgUploadEffectLevelElement.querySelector('.effect-level__slider');
 const effectsListElement = document.querySelector('.effects__list');
 const effectLevelValueElement = document.querySelector('.effect-level__value');
-const imgUploadPreview = document.querySelector('.img-upload__preview');
+const imgUploadPreviewElement = document.querySelector('.img-upload__preview');
 
 let currentPhotoEffectCSSClass;
 let currentFilterEffect;
@@ -46,7 +46,7 @@ noUiSlider.create(sliderElement, {
 
 
 const getSliderOptionsByEffect = (imgEffect) =>{
-  const sliderOptions = DEFAULT_SLIDER_OPTIONS;
+  const sliderOptions = {...DEFAULT_SLIDER_OPTIONS};
 
   switch(imgEffect){
 
@@ -79,7 +79,7 @@ const getSliderOptionsByEffect = (imgEffect) =>{
 
 const applyFilterEffectToImg = (value) => {
 
-  imgUploadPreview.style.filter = currentFilterEffect ? currentFilterEffect.replace(EFFECT_TEMPLATE_STR_REPLACEMENT, value) : null;
+  imgUploadPreviewElement.style.filter = currentFilterEffect ? currentFilterEffect.replace(EFFECT_TEMPLATE_STR_REPLACEMENT, value) : null;
 };
 
 sliderElement.noUiSlider.on('update', (values, handle) => {
@@ -90,10 +90,10 @@ sliderElement.noUiSlider.on('update', (values, handle) => {
 
 const configurePhotoEditor = (imgEffect) => {
   const newPhotoEffectCSSClass = EFFECTS_PREVIEW_BASE_CSS_CLASS + imgEffect;
-  imgUploadPreview.classList.remove(currentPhotoEffectCSSClass);
+  imgUploadPreviewElement.classList.remove(currentPhotoEffectCSSClass);
 
   currentPhotoEffectCSSClass = newPhotoEffectCSSClass;
-  imgUploadPreview.classList.add(newPhotoEffectCSSClass);
+  imgUploadPreviewElement.classList.add(newPhotoEffectCSSClass);
 
   currentFilterEffect = effectToFilter[imgEffect];
 
@@ -112,7 +112,7 @@ const configurePhotoEditor = (imgEffect) => {
   }
 };
 
-const onPhotoFilterEffectsListElementCheck = (evt) => {
+const onEffectsListCheck = (evt) => {
   const target = evt.target;
 
   if(target.matches('.effects__radio')){
@@ -121,7 +121,7 @@ const onPhotoFilterEffectsListElementCheck = (evt) => {
 };
 
 const addPhotoFilterEffects = () => {
-  effectsListElement.addEventListener('change', onPhotoFilterEffectsListElementCheck);
+  effectsListElement.addEventListener('change', onEffectsListCheck);
 };
 
 const setInitialPhotoEffects = () => {
@@ -129,7 +129,7 @@ const setInitialPhotoEffects = () => {
 };
 
 const removePhotoFilterEffects = () => {
-  effectsListElement.removeEventListener('change', onPhotoFilterEffectsListElementCheck);
+  effectsListElement.removeEventListener('change', onEffectsListCheck);
   setInitialPhotoEffects();
 };
 

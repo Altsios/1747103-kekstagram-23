@@ -2,73 +2,66 @@ import {isEscEvent} from './utils.js';
 
 const TIMEOUT_ERROR_MSG = 5000;
 
+const PhotoUploadedStatus = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+};
+
 const successTemplateElement = document.querySelector('#success');
 const errorTemplateElement = document.querySelector('#error');
 
-let onAlertShowerKeyDown = null;
+let onPhotoUploadedMsgKeyDown = null;
 
 const hideMessage = (element) => {
   element.remove();
-  document.removeEventListener('keydown', onAlertShowerKeyDown);
+  document.removeEventListener('keydown', onPhotoUploadedMsgKeyDown);
 };
 
 const addKeydownEventListener = (element, cb) => (evt) => {
+  evt.preventDefault();
   if(isEscEvent(evt)){
     cb();
     hideMessage(element);
   }
 };
 
-const onAlertShowerBtnClick = (element, cb) => {
+const onPhotoUploadedMsgBtnClick = (element, cb) => {
   cb();
   hideMessage(element);
 };
 
-const onAlertShowerClickOutside = (evt, element, selector, cb) => {
+const onPhotoUploadedMsgClickOutside = (evt, element, selector, cb) => {
   if(evt.target.matches(selector)){
     cb();
     hideMessage(element);
   }
 };
 
-const showSuccessPhotoUploadedMsg = (cb) => {
+const createPhotoUploadedMsg  = (photoUploadedStatus, templateElement, cb) => {
 
-  const successTemplate = successTemplateElement
+  const elementClass = `.${photoUploadedStatus}`;
+
+  const messageTemplate = templateElement
     .content
-    .querySelector('.success');
+    .querySelector(elementClass);
 
-  const successElement = successTemplate.cloneNode(true);
+  const messageElement = messageTemplate.cloneNode(true);
 
-  successElement.style.zIndex = 100;
-  document.body.append(successElement);
+  messageElement.style.zIndex = 100;
+  document.body.append(messageElement);
 
-  const btnSuccesElement = successElement.querySelector('.success__button');
+  const messageBtnElement = messageElement.querySelector(`${elementClass}__button`);
 
-  successElement.addEventListener('click', (evt) => onAlertShowerClickOutside(evt, successElement, '.success', cb));
-  btnSuccesElement.addEventListener('click', () => onAlertShowerBtnClick(successElement, cb));
-  onAlertShowerKeyDown = addKeydownEventListener(successElement, cb);
-  document.addEventListener('keydown', onAlertShowerKeyDown);
+  messageElement.addEventListener('click', (evt) => onPhotoUploadedMsgClickOutside(evt, messageElement, elementClass, cb));
+  messageBtnElement.addEventListener('click', () => onPhotoUploadedMsgBtnClick(messageElement, cb));
+  onPhotoUploadedMsgKeyDown = addKeydownEventListener(messageElement, cb);
+  document.addEventListener('keydown', onPhotoUploadedMsgKeyDown);
 };
 
 
-const showErrorPhotoUploadedMsg = (cb) => {
+const showSuccessPhotoUploadedMsg = (cb) => createPhotoUploadedMsg(PhotoUploadedStatus.SUCCESS, successTemplateElement, cb);
+const showErrorPhotoUploadedMsg = (cb) => createPhotoUploadedMsg(PhotoUploadedStatus.ERROR, errorTemplateElement, cb);
 
-  const errorTemplate = errorTemplateElement
-    .content
-    .querySelector('.error');
-
-  const errorElement = errorTemplate.cloneNode(true);
-
-  errorElement.style.zIndex = 100;
-  document.body.append(errorElement);
-
-  const btnErrorElement = errorElement.querySelector('.error__button');
-
-  errorElement.addEventListener('click', (evt) => onAlertShowerClickOutside(evt, errorElement, '.error', cb));
-  btnErrorElement.addEventListener('click', () => onAlertShowerBtnClick(errorElement, cb));
-  onAlertShowerKeyDown = addKeydownEventListener(errorElement, cb);
-  document.addEventListener('keydown', onAlertShowerKeyDown);
-};
 
 const showErrorMsgOnTop = (message) => {
   const alertContainer = document.createElement('div');

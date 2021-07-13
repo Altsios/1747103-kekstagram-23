@@ -8,38 +8,47 @@ const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const HASHTAG_WRONG_SYMBOLS_PATTERN = /[^#\d\sа-яa-z]+/i;
 const HASHTAG_PATTERN = new RegExp(`^#[\\dа-яa-z]{1,${MAX_HASHTAG_LENGTH - 1}}$`, 'i');
 
-const photoUploaderForm = document.querySelector('#upload-select-image');
-const fileInputElement = photoUploaderForm.querySelector('#upload-file');
-const imgEditorElement = photoUploaderForm.querySelector('.img-upload__overlay');
-const btnUploadCancelElement = photoUploaderForm.querySelector('#upload-cancel');
-const textHashTagsElement = photoUploaderForm.querySelector('.text__hashtags');
-const textDescriptionElement = photoUploaderForm.querySelector('.text__description');
-const imgUploadPreviewElement = photoUploaderForm.querySelector('.img-upload__preview img');
+const photoUploaderFormElement = document.querySelector('#upload-select-image');
+const fileInputElement = photoUploaderFormElement.querySelector('#upload-file');
+const imgEditorElement = photoUploaderFormElement.querySelector('.img-upload__overlay');
+const btnUploadCancelElement = photoUploaderFormElement.querySelector('#upload-cancel');
+const textHashTagsElement = photoUploaderFormElement.querySelector('.text__hashtags');
+const textDescriptionElement = photoUploaderFormElement.querySelector('.text__description');
+const imgUploadPreviewElement = photoUploaderFormElement.querySelector('.img-upload__preview img');
 
-let onPhotoUploaderEscKeydown = undefined;
-let onPhotoUploaderCloseClick = undefined;
+let onPhotoUploaderFormEscKeydown = undefined;
+let onBtnUploadCancelClick = undefined;
 
 let isErrorOccurred = false;
+let isFormSubmitted = false;
+
+const toggleFormSubmiittedState = () => {
+  isFormSubmitted = !isFormSubmitted;
+};
 
 const clearErrorStatus = () => {
   isErrorOccurred = false;
+  toggleFormSubmiittedState();
 };
 
 const setErrorStatus = () => {
   isErrorOccurred = true;
+  toggleFormSubmiittedState();
 };
 
-const onPhotoUploaderUserInputKeyDown = (evt) => {
+const cancelKeyDown = (evt) => {
   evt.stopPropagation();
 };
 
-const onPhotoUploaderTextHashTagInput = () => {
+const onTextHashTagsKeyDown = (evt) => cancelKeyDown(evt);
+const onTextDescriptionKeyDown = (evt) => cancelKeyDown(evt);
+
+const onTextHashTagsInput = () => {
   textHashTagsElement.setCustomValidity('');
   textHashTagsElement.reportValidity();
 };
 
-const onPhotoUploaderTextHashTagBlur = () => {
-
+const validateHashTags = () => {
   const hashTagsStr = textHashTagsElement.value.trim();
   const invalidities = new Set();
 
@@ -69,6 +78,17 @@ const onPhotoUploaderTextHashTagBlur = () => {
 
   textHashTagsElement.setCustomValidity(invalidities.size > 0 ? Array.from(invalidities).join('\n') : '');
   textHashTagsElement.reportValidity();
+
+  return invalidities.size === 0;
+};
+
+const onTextHashTagsBlur = (evt) => {
+
+  if(evt.relatedTarget === btnUploadCancelElement){
+    return;
+  }
+
+  validateHashTags();
 };
 
 const clearFormFields = () => {
@@ -80,53 +100,61 @@ const clearFormFields = () => {
 };
 
 const closePhotoUploaderForm = () =>{
-  if(!isErrorOccurred){
-    imgEditorElement.classList.add('hidden');
-    document.body.classList.remove('modal-open');
-
-    document.removeEventListener('keydown', onPhotoUploaderEscKeydown);
-    btnUploadCancelElement.removeEventListener('click', onPhotoUploaderCloseClick);
-
-    textHashTagsElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
-    textHashTagsElement.removeEventListener('blur', onPhotoUploaderTextHashTagBlur);
-    textHashTagsElement.removeEventListener('input', onPhotoUploaderTextHashTagInput);
-    textDescriptionElement.removeEventListener('keydown', onPhotoUploaderUserInputKeyDown);
-
-    clearFormFields();
-    removeScaling();
-    removePhotoFilterEffects();
+  if(isErrorOccurred){
+    return;
   }
+
+  imgEditorElement.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+
+  document.removeEventListener('keydown', onPhotoUploaderFormEscKeydown);
+  btnUploadCancelElement.removeEventListener('click', onBtnUploadCancelClick);
+
+  textHashTagsElement.removeEventListener('keydown', onTextHashTagsKeyDown);
+  textHashTagsElement.removeEventListener('blur', onTextHashTagsBlur);
+  textHashTagsElement.removeEventListener('input', onTextHashTagsInput);
+  textDescriptionElement.removeEventListener('keydown', onTextDescriptionKeyDown);
+
+  clearFormFields();
+  removeScaling();
+  removePhotoFilterEffects();
 };
 
-onPhotoUploaderEscKeydown = (evt) => {
+onPhotoUploaderFormEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     closePhotoUploaderForm();
   }
 };
 
-onPhotoUploaderCloseClick = () => {
+onBtnUploadCancelClick = () => {
   closePhotoUploaderForm();
 };
 
 const openPhotoUploaderForm = () => {
+  isFormSubmitted = false;
   imgEditorElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  document.addEventListener('keydown', onPhotoUploaderEscKeydown);
-  btnUploadCancelElement.addEventListener('click', onPhotoUploaderCloseClick);
+  document.addEventListener('keydown', onPhotoUploaderFormEscKeydown);
+  btnUploadCancelElement.addEventListener('click', onBtnUploadCancelClick);
 
-  textHashTagsElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
-  textHashTagsElement.addEventListener('blur', onPhotoUploaderTextHashTagBlur);
-  textHashTagsElement.addEventListener('input', onPhotoUploaderTextHashTagInput);
-  textDescriptionElement.addEventListener('keydown', onPhotoUploaderUserInputKeyDown);
+  textHashTagsElement.addEventListener('keydown', onTextHashTagsKeyDown);
+  textHashTagsElement.addEventListener('blur', onTextHashTagsBlur);
+  textHashTagsElement.addEventListener('input', onTextHashTagsInput);
+  textDescriptionElement.addEventListener('keydown', onTextDescriptionKeyDown);
 
   addScaling();
   addPhotoFilterEffects();
 };
 
 const onPhotoUploaderInputChanged = () =>{
-
   const file = fileInputElement.files[0];
+
+  if(!file) {
+    closePhotoUploaderForm();
+    return;
+  }
+
   const fileName = file.name.toLowerCase();
 
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
@@ -146,23 +174,26 @@ const onPhotoUploaderInputChanged = () =>{
 fileInputElement.addEventListener('change', onPhotoUploaderInputChanged);
 
 const setPhotoUploaderFormSubmit = (sendData, onSuccess, onFail) => {
-  if (photoUploaderForm) {
-    photoUploaderForm.addEventListener('submit', (evt) => {
-      evt.preventDefault();
 
-      sendData(
-        () => {
-          clearErrorStatus();
-          onSuccess(closePhotoUploaderForm);
-        },
-        () => {
-          setErrorStatus();
-          onFail(clearErrorStatus);
-        },
-        new FormData(evt.target),
-      );
-    });
-  }
+  photoUploaderFormElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    if(isFormSubmitted || !validateHashTags()){
+      return;
+    }
+
+    sendData(
+      () => {
+        clearErrorStatus();
+        onSuccess(closePhotoUploaderForm);
+      },
+      () => {
+        setErrorStatus();
+        onFail(clearErrorStatus);
+      },
+      new FormData(evt.target),
+    );
+  });
 };
 
 export {setPhotoUploaderFormSubmit};

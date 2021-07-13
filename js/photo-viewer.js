@@ -12,7 +12,7 @@ const commentsElement = bigPictureElement.querySelector('.social__comments');
 const btnPictureCancelElement = bigPictureElement.querySelector('.big-picture__cancel');
 
 const commentCountElement = bigPictureElement.querySelector('.social__comment-count');
-const commentsLoader = bigPictureElement.querySelector('.comments-loader');
+const commentsLoaderElement = bigPictureElement.querySelector('.comments-loader');
 
 let currentPhoto;
 
@@ -56,16 +56,16 @@ const renderNextComments = () => {
 
   const loadedCommentsCount = commentsElement.childElementCount;
   if(loadedCommentsCount === comments.length){
-    commentsLoader.classList.add('hidden');
+    commentsLoaderElement.classList.add('hidden');
   }
   else{
-    commentsLoader.classList.remove('hidden');
+    commentsLoaderElement.classList.remove('hidden');
   }
 
   setLoadedCommentsCount(loadedCommentsCount);
 };
 
-const onPhotoViewerCommentsLoaderClick = () => {
+const onCommentsLoaderClick = () => {
   renderNextComments();
 };
 
@@ -84,24 +84,24 @@ const setCommentsInfo = () => {
   commentsElement.innerHTML ='';
 };
 
-let onPhotoViewerEscKeydown = undefined;
-let onPhotoViewerCloseClick = undefined;
+let onBigPictureEscKeydown = undefined;
+let onBtnPictureCancelClick = undefined;
 
 const hidePhoto = () => {
 
   bigPictureElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onPhotoViewerEscKeydown);
+  document.removeEventListener('keydown', onBigPictureEscKeydown);
 
-  btnPictureCancelElement.removeEventListener('click', onPhotoViewerCloseClick);
-  commentsLoader.removeEventListener('click', onPhotoViewerCommentsLoaderClick);
+  btnPictureCancelElement.removeEventListener('click', onBtnPictureCancelClick);
+  commentsLoaderElement.removeEventListener('click', onCommentsLoaderClick);
 };
 
-onPhotoViewerCloseClick = () => {
+onBtnPictureCancelClick = () => {
   hidePhoto();
 };
 
-onPhotoViewerEscKeydown = (evt) => {
+onBigPictureEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     evt.preventDefault();
     hidePhoto();
@@ -110,20 +110,22 @@ onPhotoViewerEscKeydown = (evt) => {
 
 const showPhoto = (photoDescription) => {
 
+  if(!photoDescription){
+    return;
+  }
+
   currentPhoto = photoDescription;
 
-  if(currentPhoto){
-    document.body.classList.add('modal-open');
-    bigPictureElement.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  bigPictureElement.classList.remove('hidden');
 
-    document.addEventListener('keydown', onPhotoViewerEscKeydown);
-    btnPictureCancelElement.addEventListener('click', onPhotoViewerCloseClick);
-    commentsLoader.addEventListener('click', onPhotoViewerCommentsLoaderClick);
+  document.addEventListener('keydown', onBigPictureEscKeydown);
+  btnPictureCancelElement.addEventListener('click', onBtnPictureCancelClick);
+  commentsLoaderElement.addEventListener('click', onCommentsLoaderClick);
 
-    setCommentsInfo();
-    renderPhoto();
-    renderNextComments();
-  }
+  setCommentsInfo();
+  renderPhoto();
+  renderNextComments();
 };
 
 export {showPhoto};
